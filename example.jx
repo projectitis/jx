@@ -1,0 +1,48 @@
+/**
+ * This is an example of a valid JX file. Note that it supports comments. These
+ * are ignored during parsing.
+ * example.jx
+ **/
+ {
+    // JX supports keys without quotes
+    Title: "JX file format";
+    // Values can be terminated with a comma or a semicolon, but semicolon is preferred for JX.
+    SubTitle: "A super-set of JSON",
+    // Strings can be quoted using single- or double-quotes, and may contain the other type of quote without escaping
+    QuotedString: 'This is "perfectly" fine';
+    "AnotherQuotedString": "This is 'also' ok";
+    // This is a variable that can be referenced anywhere. Variables have global scope
+    $FormatExtension: ".jx";
+    // This sets a default variable if the user hasn't passed one in yet
+    ?$FormatLongName: "JSON Extra";
+    // Colors
+    $HighlightColor: #ffffff;
+    
+    // This is an array (just like JSON)
+    Settings: [
+        // This is a string
+        "This is a string";
+        // And these are numbers
+        -45.189;
+        0xb8ac20;
+        // Colors are also supported, in numerous formats
+        #ff9900;
+        rgb( 255, 198, 0 );
+        rgba( 255, 198, 0, 0.5 );
+        
+        // Here is an object (just like JSON)
+        {
+            // Here we are referencing that variable from before
+            Name: $FormatLongName;
+            // This is neat. lookbacks to other values are supported (but not look-aheads)
+            AnotherTitle: Title;
+            BackgroundColor: Settings[3];
+            // Equations
+            "My equation": sin( PI ) * 4 ^ 2 * (14 + 3);
+            // Strings
+            'Alert String': "Hello World. This is " + $FormatLongName;
+            // Colors
+            ForegroundColor: tint( Settings[6].BackgroundColor,  $HighlightColor, 0.25 );
+        }
+    ], // Trailing commas are ignored (do not result in error) 
+}
