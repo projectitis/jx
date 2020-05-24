@@ -1,5 +1,5 @@
 # JX
-JX (short for Json eXtra, file extension `.jx`) is a file format based on [JSON](https://www.json.org/json-en.html). JX was designed specifically for configuration files, but has a wide range of potential applications. JSON was designed to be lightweight with minimal rules. JX is a super-set of JSON that supports core JSON but adds many more powerful features. For example:
+JX (short for Json eXtended, file extension `.jx`) is a file format based on [JSON](https://www.json.org/json-en.html). JX was designed specifically for configuration files, but has a wide range of potential applications. JSON was designed to be lightweight with minimal rules. JX is a super-set of JSON that supports core JSON but adds many more powerful features. For example:
 * Inline and block comments
 * Keys without quotes
 * Single and double quotes
@@ -10,7 +10,7 @@ JX (short for Json eXtra, file extension `.jx`) is a file format based on [JSON]
 Here is an [example jx file](example.jx).
 
 ## Licence
-The JX (Json eXtra) format and the parsers supplied here are Open-Source under the MIT licence (free for any use, personal or commercial, without attribution, but also without warranty).
+The JX (Json eXtended) format and the parsers supplied here are Open-Source under the MIT licence (free for any use, personal or commercial, without attribution, but also without warranty).
 
 ## Supported languages
 The library is developed using [Haxe](https://haxe.org). The great thing about Haxe is that it compiles to source code in other languages (such as PHP, c#, c++, Javascript etc), so JX is available in a wide range of languages!
