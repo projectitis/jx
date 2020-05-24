@@ -1,5 +1,5 @@
-# jx
-JX is a file format based on [JSON](https://www.json.org/json-en.html). JX was designed specifically for configuration files, but has a wide range of potential applications. JSON was designed to be lightweight with minimal rules. JX (Json eXtra) is a super-set of JSON that supports core JSON but adds many more powerful features. For example:
+# JX
+JX (short for Json eXtra, file extension `.jx`) is a file format based on [JSON](https://www.json.org/json-en.html). JX was designed specifically for configuration files, but has a wide range of potential applications. JSON was designed to be lightweight with minimal rules. JX is a super-set of JSON that supports core JSON but adds many more powerful features. For example:
 * Inline and block comments
 * Keys without quotes
 * Single and double quotes
