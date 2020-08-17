@@ -3,9 +3,10 @@ JX (short for Json eXtended, file extension `.jx`) is a file format based on [JS
 * Inline and block comments
 * Keys without quotes
 * Single and double quotes
-* Variables and equations (including user-variables)
+* Variables and equations (including user-variables and default values)
 * Color support and manipulation
-* Look-back referencing
+* _Look-back referencing (not yet supported)_
+* _Combining JX files (not yet supported)_
 
 Here is an [example jx file](example.jx).
 
@@ -17,10 +18,12 @@ The library is developed using [Haxe](https://haxe.org). The great thing about H
 * [Haxe](/src/haxe/)
 
 ## Status
-Work in progress. Parser not yet complete.
+Work in progress. Currently a fully working parser, with exceptions noted below (still in progress).
+
+The current JxParser has dependencies on two other files and will not compile on it's own. These dependences will be removed in the next update. The only way to currently use JxParser is as part of the [heapsmore](https://github.com/projectitis/heapsmore) library.
 
 ## Versions
-Current version v0.1 (June 2020)
+Current version v0.2 (August 2020)
 
 ## Comments
 JX supports inline comments using __// comment__ and block comments using __/* comment */__. During parsing comments are treated as whitespace, so may occur anywhere that whitespace occurs. Be careful though, this can result in hard-to-read code. Just because you can doesn't mean you should!
@@ -36,34 +39,53 @@ JX supports inline comments using __// comment__ and block comments using __/* c
 }
 ````
 
+## Keys
+Keys do not have to be quoted, as long as they do not contain whitespace characters. They may contain dots (e.g. `foo.bar: "FOOBAR"`) however, this may cause difficulties when using look-backs, so it is recommended to avoid them.
+````
+{ This_Key_is-not#quoted: "And it works" }
+````
+
 ## Quotes
-Keys do not have to be quoted, as long as they do not contain whitespace or illegal characters.
-````
-{ ThisKey_is_not_quoted: "And it works" }
-````
-However, for both keys and strings, single and double quotes are supprted. A string may contain the other type of quote without escaping, but must escape quotes if they are the same as the surrounding quotes.
+For both quoted keys and strings, single and double quotes are supported. A string may contain the other type of quote without escaping, but must escape quotes if they are the same as the enclosing quotes.
 ````
 [
-    "This is 'fine' to do";
+    "This is 'fine' to do",
     'And this is "also" fine';
-    "You can \"escape\" like this";
+    "You can \"escape\" like this",
     'and \'like\' this';
 ]
 ````
+_Note that comma or semi-colon can be used to seperate values._
 
 ## Values
 The standard JSON values are supported, including `String`, `Number`, `true`, `false`, `null`. However, additional value types are supported.
+
+Values can be seperated by comma, or by semicolon (see the **quotes** example above)
 
 ### Number
 As well as decimal integers or floats (`-12`, `14.99`), numbers can also be extressed as hexidecimal (`0xaa72`) or binary (`b10111001`).
 
 ### Color
 Colors are actually just parsed to a number (integer), but can be expressed in different ways:
-```
+````
 [
     #ff9900; // css hex format
     rgb( 255, 153, 0 ); // RGB format (0-255)
     rgba( 255, 153, 0, 0.4 ); // RGBA format where alpha is 0.0 - 1.0
+]
+````
+
+### Strings
+Strings can wrap lines and contain any whitespace present between the enclosing quotes. Escaped characters such as `\n` and `\t` are also supported. Also see notes on _Quotes_ above. These are examples of valid strings:
+````
+[
+    "This is a long string on multiple lines.
+    Beware - this second line starts with a tab character!
+This is the third line of the string.";
+
+    'Strings may contain "quotes" as long as they are not the same as the enclosing quotes.';
+
+    "Strings may be enclosed with either single or double quotes.";
 ]
 ````
 
@@ -108,20 +130,24 @@ Many math equations are supported directly within the JX document. This is usefu
 }
 ````
 
-## Look-back references
-As well as variables, JX supports look-backs to reference any values that have already been set. Look-forwards are not supported. Look-backs should not be quoted, and as such none of the parts of the path may contain whitespace or illegal chaaracters. Array access is zero-based.
+## Look-back references (not yet supported)
+As well as variables, JX supports look-backs to reference any values that have already been set. Look-forwards are not supported.
+
+Look-backs start with an equals sign (=) and may be quoted. Array access is zero-based. If a key in the path contains a space, it must be escaped by another dot (see below).
 ````
 {
     foo: "Foo";
+    foo.bar: "Has a dot in the key";
     bar: [
         "Hello";
         "World";
         {
-            foo-bar: bar[1]; // Will be "World"
+            foo-bar: =bar[1]; // Will be "World"
         }
     ];
-    foo-bar: bar[2].foo-bar; // Will also be "World"
-    name: foo; // Will be "Foo"
+    foo-bar: =bar[2].foo-bar; // Will also be "World"
+    name: =foo; // Will be "Foo"
+    hasDot: ="foo.bar"; // Will be "Has a dot in the key";
 }
 ````
 If the base element is an array:
@@ -130,8 +156,19 @@ If the base element is an array:
     "Hello";
     "World";
     {
-        foo-bar: [1]; // Will be "World"
-        foo-bar-2: [2].foo-bar; // Will also be "World"
+        foo-bar: =[1]; // Will be "World"
+        foo-bar-2: =[2].foo-bar; // Will also be "World"
     }
 ]
 ````
+
+## Combining JX files (not yet supported)
+JX allows combing multiple JX files together. This is useful if, for example, there is a default configuration file that contains all the available options, and then a second "user" config file that contains only a few items that need to change. To combine these, the default config is parsed first, and then the user config is parsed over the top of this. Depending on the implementation, this could be achieved by passing in a list of JX files to parse (in order), or by parsing one file first and then passing this in to the second parse as the 'base' data object.
+````
+// Example in haxe
+var user = JxParser.parse( [defaultConfig, userConfig] );
+// or
+var base = JxParser.parse( defaultConfig );
+var user = JxParser.parse( userConfig, base );
+````
+When combining JX files, the structure of the files must match or errors will result. For example, if one file has a key called `settings` that is an array (`[ ]`), and the other has a key called `settings` that is an object (`{ }`) or another type that is not an array (e.g. a String, Number etc) then a `type mismatch` error will be thrown.
