@@ -1,7 +1,3 @@
-package mxd;
-
-import hxd.Math;
-import mxd.tools.ColorTools;
 using StringTools;
 
 /**
@@ -926,69 +922,69 @@ class JxParser {
 				return Math.abs( token.args[0].value );
 			}
 			case 'clamp': {
-				if (token.checkArgs( [ATNumber,ATNumber,ATNumber] )) return Math.clamp( token.args[0].value, token.args[1].value, token.args[2].value );
-				if (token.checkArgs( [ATNumber,ATNumber] )) return Math.clamp( token.args[0].value, token.args[1].value );
-				if (token.checkArgs( [ATNumber] )) return Math.clamp( token.args[0].value );
+				if (token.checkArgs( [ATNumber,ATNumber,ATNumber] )) return clamp( token.args[0].value, token.args[1].value, token.args[2].value );
+				if (token.checkArgs( [ATNumber,ATNumber] )) return clamp( token.args[0].value, token.args[1].value );
+				if (token.checkArgs( [ATNumber] )) return clamp( token.args[0].value );
 				error( 'Incorrect args for "$fn". Expect (Float, [Float, [Float]] )', token.pos );
 				return null;
 			}
 			case 'lerp': {
 				if (!token.checkArgs( [ATNumber, ATNumber, ATNumber] )) error( 'Incorrect args for "$fn". Expect (Float,Float,Float)', token.pos );
-				return Math.lerp( token.args[0].value, token.args[1].value, token.args[2].value );
+				return lerp( token.args[0].value, token.args[1].value, token.args[2].value );
 			}
 			case 'degtorad': {
 				if (!token.checkArgs( [ATNumber] )) error( 'Incorrect args for "$fn". Expect (Float)', token.pos );
-				return Math.degToRad( token.args[0].value );
+				return degToRad( token.args[0].value );
 			}
 			case 'radtodeg': {
 				if (!token.checkArgs( [ATNumber] )) error( 'Incorrect args for "$fn". Expect (Float)', token.pos );
-				return Math.radToDeg( token.args[0].value );
+				return radToDeg( token.args[0].value );
 			}
 			case 'random': {
 				if (!token.checkArgs( [ATNumber] )) error( 'Incorrect args for "$fn". Expect (Float)', token.pos );
-				return Math.random( token.args[0].value );
+				return Math.random()*token.args[0].value;
 			}
 
 			// Color
 			case 'rgb': {
 				if (!token.checkArgs( [ATInt,ATInt,ATInt] )) error( 'Incorrect args for "$fn". Expect (Int, Int, Int)', token.pos );
-				return ColorTools.colorFromRGB( token.args[0].value, token.args[1].value, token.args[2].value );
+				return colorFromRGB( token.args[0].value, token.args[1].value, token.args[2].value );
 			}
 			case 'rgba': {
 				if (!token.checkArgs( [ATInt,ATInt,ATInt,ATNumber] )) error( 'Incorrect args for "$fn". Expect (Int, Int, Int, Float)', token.pos );
-				return ColorTools.colorFromRGBa( token.args[0].value, token.args[1].value, token.args[2].value, token.args[3].value );
+				return colorFromRGBa( token.args[0].value, token.args[1].value, token.args[2].value, token.args[3].value );
 			}
 			case 'alpha': {
 				if (!token.checkArgs( [ATInt] )) error( 'Incorrect args for "$fn". Expect (Color)', token.pos );
-				return ColorTools.alpha( token.args[0].value );
+				return alpha( token.args[0].value );
 			}
 			case 'red': {
 				if (!token.checkArgs( [ATInt] )) error( 'Incorrect args for "$fn". Expect (Color)', token.pos );
-				return ColorTools.red( token.args[0].value );
+				return red( token.args[0].value );
 			}
 			case 'green': {
 				if (!token.checkArgs( [ATInt] )) error( 'Incorrect args for "$fn". Expect (Color)', token.pos );
-				return ColorTools.green( token.args[0].value );
+				return green( token.args[0].value );
 			}
 			case 'blue': {
 				if (!token.checkArgs( [ATInt] )) error( 'Incorrect args for "$fn". Expect (Color)', token.pos );
-				return ColorTools.blue( token.args[0].value );
+				return blue( token.args[0].value );
 			}
 			case 'opacity': {
 				if (!token.checkArgs( [ATInt,ATNumber] )) error( 'Incorrect args for "$fn". Expect (Color, Float)', token.pos );
-				return ColorTools.opacity( token.args[0].value, token.args[1].value );
+				return opacity( token.args[0].value, token.args[1].value );
 			}
 			case 'darken': {
 				if (!token.checkArgs( [ATInt,ATNumber] )) error( 'Incorrect args for "$fn". Expect (Color, Float)', token.pos );
-				return ColorTools.darken( token.args[0].value, token.args[1].value );
+				return darken( token.args[0].value, token.args[1].value );
 			}
 			case 'lighten': {
 				if (!token.checkArgs( [ATInt,ATNumber] )) error( 'Incorrect args for "$fn". Expect (Color, Float)', token.pos );
-				return ColorTools.lighten( token.args[0].value, token.args[1].value );
+				return lighten( token.args[0].value, token.args[1].value );
 			}
 			case 'tint': {
 				if (!token.checkArgs( [ATInt,ATInt,ATNumber] )) error( 'Incorrect args for "$fn". Expect (Color, Color, Float)', token.pos );
-				return ColorTools.tint( token.args[0].value, token.args[1].value, token.args[2].value );
+				return tint( token.args[0].value, token.args[1].value, token.args[2].value );
 			}
 
 			default: {
@@ -1068,6 +1064,88 @@ class JxParser {
 
 	inline function rewind( amount:Int = 1 ) {
 		pos -= amount;
+	}
+
+	/**
+	 * Math functions for standalone version of JxParser. Taken from Heaps
+	 */
+	public static inline function clamp( f : Float, min = 0., max = 1. ) {
+		return f < min ? min : f > max ? max : f;
+	}
+	public static inline function iclamp( v : Int, min : Int, max : Int ) {
+		return v < min ? min : (v > max ? max : v);
+	}
+	public inline static function lerp(a:Float, b:Float, k:Float) {
+		return a + k * (b - a);
+	}
+	public static inline function degToRad( deg : Float) {
+		return deg * Math.PI / 180.0;
+	}
+	public static inline function radToDeg( rad : Float) {
+		return rad * 180.0 / Math.PI;
+	}
+
+	/**
+	 * Color function for standalone version of JxParser. Taken from Heapsmore
+	 */
+	public static inline function opacity( color : Int, a : Float ){
+		var av : Int = Math.round( clamp(a) * 255 );
+		return (color & 0xffffff) | (av<<24);
+	}
+	public static inline function colorFromRGB( R : Int, G : Int, B : Int ) : Int{
+		R = iclamp( R, 0, 255 );
+		G = iclamp( G, 0, 255 );
+		B = iclamp( B, 0, 255 );
+		return fastColorFromRGB( R, G, B );
+	}
+	public static inline function fastColorFromRGB( R : Int, G : Int, B : Int ) : Int{
+		return (R<<16) | (G<<8) | B;
+	}
+	public static inline function colorFromRGBa( R : Int, G : Int, B : Int, a : Float ) : Int{
+		var A : Int = Math.round(clamp(a)*255);
+		R = iclamp( R, 0, 255 );
+		G = iclamp( G, 0, 255 );
+		B = iclamp( B, 0, 255 );
+		return fastColorFromRGBA( R, G, B, A );
+	}
+	public static inline function fastColorFromRGBa( R : Int, G : Int, B : Int, a : Float ) : Int{
+		return (Math.round(a*255)<<24) | (R<<16) | (G<<8) | B;
+	}
+	public static inline function fastColorFromRGBA( R : Int, G : Int, B : Int, A : Int ) : Int{
+		return (A<<24) | (R<<16) | (G<<8) | B;
+	}
+	public static function tint( c : Int, t : Int, a : Float ) : Int {
+		a = clamp(a);
+		var R : Int = Math.floor( lerp( (c >> 16) & 0xff, (t >> 16) & 0xff, a ) );
+		var G : Int = Math.floor( lerp( (c >> 8) & 0xff, (t >> 8) & 0xff, a ) );
+		var B : Int = Math.floor( lerp( c & 0xff, t & 0xff, a ) );
+		return fastColorFromRGB( R, G, B );
+	}
+	public static function darken( c : Int, a : Float ) : Int {
+		a = 1 - clamp(a);
+		var R : Int = Math.floor( ((c >> 16) & 0xff) * a );
+		var G : Int = Math.floor( ((c >> 8) & 0xff) * a );
+		var B : Int = Math.floor( (c & 0xff) * a );
+		return fastColorFromRGB( R, G, B );
+	}
+	public static function lighten( c : Int, a : Float ) : Int {
+		a = clamp(a);
+		var R : Int = Math.floor( lerp( (c >> 16) & 0xff, 255, a ) );
+		var G : Int = Math.floor( lerp( (c >> 8) & 0xff, 255, a ) );
+		var B : Int = Math.floor( lerp( c & 0xff, 255, a ) );
+		return fastColorFromRGB( R, G, B );
+	}
+	public static inline function alpha( c : Int ) : Int {
+		return (c >> 24) & 0xff;
+	}
+	public static inline function red( c : Int ) : Int {
+		return (c >> 16) & 0xff;
+	}
+	public static inline function green( c : Int ) : Int {
+		return (c >> 8) & 0xff;
+	}
+	public static inline function blue( c : Int ) : Int {
+		return c & 0xff;
 	}
 
 }
