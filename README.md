@@ -20,10 +20,8 @@ The library is developed using [Haxe](https://haxe.org). The great thing about H
 ## Status
 Work in progress. Currently a fully working parser, with exceptions noted below (still in progress).
 
-The current JxParser has dependencies on two other files and will not compile on it's own. These dependences will be removed in the next update. The only way to currently use JxParser is as part of the [heapsmore](https://github.com/projectitis/heapsmore) library.
-
 ## Versions
-Current version v0.2 (August 2020)
+Current version v0.21 (August 2020)
 
 ## Comments
 JX supports inline comments using __// comment__ and block comments using __/* comment */__. During parsing comments are treated as whitespace, so may occur anywhere that whitespace occurs. Be careful though, this can result in hard-to-read code. Just because you can doesn't mean you should!
