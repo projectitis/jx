@@ -17,6 +17,20 @@ The JX (Json eXtended) format and the parsers supplied here are Open-Source unde
 The library is developed using [Haxe](https://haxe.org). The great thing about Haxe is that it compiles to source code in other languages (such as PHP, c#, c++, Javascript etc), so JX is available in a wide range of languages!
 * [Haxe](/src/haxe/)
 
+## usage (Haxe)
+````
+var jx : JxParser = new JxParser();
+var r = jx.parse( "{ name: 'Projectitis'; }" );
+trace(r);
+````
+
+````
+var jx : JxParser = new JxParser();
+jx.variables.set('myName','Projectitis');
+var r = jx.parse( "{ name: $myName; }" );
+trace(r);
+````
+
 ## Status
 Work in progress. Currently a fully working parser, with exceptions noted below (still in progress).
 
