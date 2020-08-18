@@ -1,48 +1,6 @@
 using StringTools;
 
 /**
- * EqParser parses mathematical (and other) equations from a string.
- * 		Mathematical pperators: + - / * ^ % ( )
- * 		String operators: +
- * 		Constants: PI, PI_2, INV_PI
- * 		Mathematical functions:
- * 			min, max, floor, ceil, round
- * 			cos, sin, tan, acos, asin, atan, atan2
- * 			sqrt, pow
- * 			abs, clamp, lerp
- * 			degToRad, radToDeg
- * 			random
- * 		Color functions:
- * 			red, green, blue, alpha
- * 			opacity, darken, lighten, tint
- * 
- * Usage:
- * 		p = new EqParser();
- * 		trace( p.parse("12.81 - sin( PI * 0.25 )") );
- * 		trace( p.parse("darken( #9722da, 0.2)") );
- * 		trace( p.parse("round( 12 + random(20) )") );
- * 		
- * 		p = new EqParser();
- * 		p.onVariable = function( var : String ) : Dynamic {
- * 			if (var == 'myName') return 'Equation Parser';
- * 			else return null;
- * 		}
- * 		trace( p.parse("'hello, ' + $myName + '. How are you?'") );
- * 
- * 		p = new EqParser();
- * 		function myFunc( a : Float, b : Int ) : Float {
- * 			return (a*2) % b;
- * 		}
- * 		p.onFunction = function( fnc : String, args : Array<Dynamic> ) : Dynamic {
- * 			if (fnc == 'myFunc') return myFunc( args[0], args[1] );
- * 			else return null;
- * 		}
- * 		trace( p.parse( "12 * myFunc( 22.12, 3 )") );
- * 
- * Algorithm based on description here: https://stackoverflow.com/a/47717/6036640
- */
-
-/**
  * Indicates the type of token parsed from the expression string
  */
 enum TokenType {
@@ -377,8 +335,8 @@ class Stack {
 }
 
 /**
- * Equation parser class. Call EqParser.parse( str : String ) to parse equations from a string. Implement
- * the onFunction, onVariable and onParameter callbacks to support custom functionallity.
+ * JX parser class. Call JxParser.parse( str : String ) to parse JX from a string. Implement
+ * the onFunction, onVariable and onConstant callbacks to support custom functionality.
  */
 class JxParser {
 
