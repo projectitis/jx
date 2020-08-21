@@ -7,8 +7,8 @@
  * Example usage (Haxe/Heaps):
  *
  * var jx = new JxParser();
- * jx.variables.set('color', '#1c5163' );
- * jx.variables.set('textColor', '#ffffff' );
+ * jx.variables.set('color', 0x1c5163 );
+ * jx.variables.set('textColor', 0xffffff );
  * var theme = jx.parse( loadResourceAsString('theme.jx') );
  *
  * var ui = new UI( s2d );
