@@ -798,7 +798,7 @@ class JxParser {
 								token.value = (d==null)?token.rawValue.toString():d;
 							}
 							else {
-								error( "Unhandled constant", token.pos );
+								error( "Unhandled constant '"+token.rawValue+"'", token.pos );
 							}
 						}
 					}
