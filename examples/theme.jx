@@ -1,0 +1,61 @@
+/**
+ * Example: Theme
+ * This example uses features of JX, including variables, equations and
+ * functuions, to create a theme template. This creates various theme
+ * colors based on a single base color that is passed in.
+ *
+ * Example usage (Haxe/Heaps):
+ *
+ * var jx = new JxParser();
+ * jx.variables.set('color', '#1c5163' );
+ * jx.variables.set('textColor', '#ffffff' );
+ * var theme = jx.parse( loadResourceAsString('theme.jx') );
+ *
+ * var ui = new UI( s2d );
+ * ui.baseColor = theme.baseColor;
+ * ui.textColor = theme.textColor;
+ * ui.bgColor = theme.bgColor;
+ * ui.highlightColor = theme.highlightColor;
+ * ui.shadowColor = theme.shadowColor;
+ **/
+{
+	/**
+	 * The user should set these variables before parsing the JX file. If
+	 * the variable are not set we provide default values so that there is
+	 * no error thrown.
+	 **/
+
+	// Base theme color. User variable. Default to a medium gray-blue
+	?$color: #1c5163;
+
+	// Base text color. User variable. Default to white.
+	// Demonstrating that colors can be a hex string (as above) or rgb() or rgba()
+	?$textColor: rgb( 255, 255, 255 );
+
+	/**
+	 * The UI designer is responsible for the values below. They determine
+	 * the color used to calculate both the highlight and shadow colors. Note that
+	 * these are default values, so they can be overwritten by setting alternative
+	 * values before parsing.
+	 **/
+	?$highlightBase: #fff9bc;	// A yellow-white
+	
+	/**
+	 * The rest of the JX file contains the calculation of the theme colors.
+	 **/
+	
+	// The base color is the same as the one passed in by the user
+	baseColor: $color;
+
+	// The text color is the same as the one passed in by the user
+	textColor: $textColor;
+
+	// The highlight is the base color tinted with the highlight base color by 50%
+	highlightColor: tint( $color, $highlightBase, 0.5 );
+
+	// The shadow is the base color darkened by 30%
+	shadowColor: darken( $color, 0.3 );
+
+	// The background color is the base color darkened by 90%
+	bgColor: darken( $color, 0.9 );
+}

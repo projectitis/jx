@@ -1,0 +1,78 @@
+/**
+ * Example: UI positioning
+ * This example uses features of JX, including variables, equations and
+ * functuions, to position UI elements depending on screen size.  The benefit
+ * of JX is that your app does not have to handle this. It's all handled
+ * by the JX file.
+ *
+ * Example usage (Haxe/Heaps):
+ *
+ * var jx = new JxParser();
+ * jx.variables.set('viewportWidth', s2d.width );
+ * jx.variables.set('viewportHeight', s2d.height );
+ * var r = jx.parse( loadResourceAsString('ui-placement.jx') );
+ *
+ * var popup = new Popoup( r.welcomePopup.text, s2d );
+ * popup.x = r.welcomePopup.x;
+ * popup.y = r.welcomePopup.y;
+ * popup.width = r.welcomePopup.width;
+ * popup.height = r.welcomePopup.height;
+ *
+ * var menu = new Menu( s2d );
+ * menu.x = r.mainMenu.x;
+ * menu.y = r.mainMenu.y;
+ * menu.width = r.mainMenu.width;
+ * menu.height = r.mainMenu.height;
+ **/
+{
+	/**
+	 * The user should set these variables before parsing the JX file. If
+	 * the variable are not set we provide default values so that there is
+	 * no error thrown.
+	 **/
+
+	// Viewport width. User variable
+	?$viewportWidth: 1024;
+
+	// Viewport height. User variable
+	?$viewportHeight: 768;
+
+	/**
+	 * The UI designer is responsible for the values below. They determine
+	 * how the UI elements are placed and sized.
+	 **/
+	$margin: 50;
+	$popupWidth: 600;
+	$popupHeight: 300;
+	
+	/**
+	 * The rest of the JX file contains the positioning of the UX elements
+	 * based on the values above.
+	 *
+	 * Position the welcome popup.
+	 **/
+	welcomePopup: {
+		// The width of the popup should be 600, but ensure that this fits on the screen!
+		$w: min( $popupWidth, $viewportWidth - $margin * 2 );
+		// The height of the popup should be 300, but ensure that this fits on the screen!
+		$h: min( $popupHeight, $viewportHeight - $margin * 2 );
+		// Position the popup horizontally centered and vertically top
+		x: ($viewportWidth - $popupWidth) / 2;
+		y: $margin;
+		width: $w;
+		height: $h;
+		text: 'Welcome!';
+	},
+	
+	/**
+	 * Position the menu against the right. The menu takes up 25% of the width and
+	 * 100% of the height.
+	 **/
+	mainMenu: {
+		x: $viewportWidth * 0.75;
+		y: 0;
+		width: $viewportWidth * 0.25;
+		height: $viewportHeight;
+	}
+
+}
