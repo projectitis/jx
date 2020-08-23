@@ -1,0 +1,27 @@
+/**
+ * Example: Basic
+ * This example shows some basic usage of a JX file.
+ *
+ * Example usage (Haxe/Heaps):
+ *
+ * var jx = new JxParser();
+ * var res = jx.parse( loadResourceAsString('basic.jx') );
+ **/
+
+ // A JX file supports both block comments and line comments
+ {
+	"This is a boolean": false,		// Keys can be quoted
+	This_is_a_boolean: true,		// Keys can be unquoted
+	myNumber: 123.456;				// Seperator can be comma or semicolon
+	$name: "JSON Extended",			// Set a variable
+
+	/* Below is an array */
+	myValues: [
+		max( 17, 6 );		// Math functions supported
+		#ff9900;			// Colors supported
+		"A string can flow over lines and 
+be multiple lines
+long!",
+		$name				// Use a variable
+	]
+}

@@ -16,6 +16,7 @@ enum TokenType {
 	TTObject;
 	TTString;
 	TTNumber;
+	TTBoolean;
 	TTVariable;
 	TTDefaultVariable;
 	TTLook;
@@ -68,6 +69,7 @@ class Token {
 		else if ( Math.isNaN( v ) ) type = TTUnknown;
 		else if ( Std.is(v, StdTypes.Float) ) type = TTNumber;
 		else if ( Std.is(v, StdTypes.Int) ) type = TTNumber;
+		else if ( Std.is(v, StdTypes.Bool) ) type = TTBoolean;
 		else type = TTUnknown;
 		return v;
 	}
@@ -306,7 +308,7 @@ class Stack {
 		var desc = '';
 		switch (t.type){
 			case TTOperator(t): desc = ' TTOperator("'+String.fromCharCode(t)+'")';
-			case TTString, TTNumber, TTFunction: desc = ' "'+t.rawValue.toString()+'"';
+			case TTString, TTNumber, TTBoolean, TTFunction: desc = ' "'+t.rawValue.toString()+'"';
 			default: desc = ' '+t.type;
 		}
 		error( 'Unexpected token'+desc, t.pos );
@@ -505,7 +507,7 @@ class JxParser {
 					return token;
 				}
 				// Found a mathematical operator, open bracket or value
-				case TTOperator(_), TTOpenBracket, TTNumber, TTString, TTVariable, TTDefaultVariable: {
+				case TTOperator(_), TTOpenBracket, TTNumber, TTString, TTBoolean, TTVariable, TTDefaultVariable: {
 					// Push to the stack
 					stack.push( token );
 				}
@@ -782,30 +784,49 @@ class JxParser {
 				}
 				// Constant
 				else {
-					switch( token.rawValue.toString().toUpperCase() ) {
-						case 'PI': {
-							token.value = Math.PI;
-						}
-						case 'PI_2': {
-							token.value = Math.PI;
-						}
-						case 'INV_PI': {
-							token.value = 1/Math.PI;
-						}
-						default: {
-							if (onConstant != null){
-								var d = onConstant( token.rawValue.toString() );
-								token.value = (d==null)?token.rawValue.toString():d;
-							}
-							else {
-								error( "Unhandled constant '"+token.rawValue+"'", token.pos );
-							}
-						}
+					var d = this.processContant( token );
+					if ( d != null ) {
+						token.value = d;
+					}
+					else  if ( onConstant != null ){
+						var d = onConstant( token.rawValue.toString() );
+						token.value = (d==null)?token.rawValue.toString():d;
+					}
+					else {
+						error( "Unhandled constant '"+token.rawValue+"'", token.pos );
 					}
 				}
 			}
 		}
 		return token;
+	}
+
+	/**
+	 * Process a constant
+	 * @param token 	The token containing the constant name
+	 * @return Dynamic	The constant value
+	 */
+	function processContant( token : Token ) : Dynamic {
+		switch( token.rawValue.toString().toUpperCase() ) {
+			case 'TRUE': {
+				return true;
+			}
+			case 'FALSE': {
+				return false;
+			}
+			case 'PI': {
+				return Math.PI;
+			}
+			case 'PI_2': {
+				return Math.PI/2;
+			}
+			case 'INV_PI': {
+				return 1/Math.PI;
+			}
+			default: {
+				return null;
+			}
+		}
 	}
 
 	/**
@@ -1002,8 +1023,8 @@ class JxParser {
 		var desc = '';
 		switch (t.type){
 			case TTOperator(t): desc = ' TTOperator("'+String.fromCharCode(t)+'")';
-			case TTString, TTNumber, TTFunction: desc = ' "'+t.rawValue.toString()+'"';
-			default: desc = ' '+t.type;
+			case TTString, TTNumber, TTBoolean, TTFunction: desc = ' "'+t.rawValue.toString()+'"';
+			default: desc = ' '+t.type+' "'+t.rawValue.toString()+'"';
 		}
 		error( 'Unexpected token'+desc, t.pos );
 	}
